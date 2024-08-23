@@ -12,7 +12,7 @@ require_relative 'state_machine_extractor'
 require_relative 'hasone_belongto_extractor'
 require_relative 'constraint'
 require_relative 'serializer' 
-
+require_relative 'hocon'
 
 options = {}
 OptionParser.new do |opt|
@@ -29,10 +29,10 @@ if for_rewrite.nil?
   for_rewrite = false
 end
 
-engine = Engine.new("#{dir}/#{appname}_models")
+engine = Engine.new("#{dir}/app/models")
 root = engine.run
 
-db_extractor = DBExtractor.new("#{dir}/#{appname}_db/schema.rb")
+db_extractor = DBExtractor.new("#{dir}/db/schema.rb")
 db_schema = db_extractor.db_schema
 db_t = Traversor.new(db_extractor)
 db_t.traverse(root)
@@ -69,4 +69,5 @@ puts "Constraint Extraction Time: #{finish - start}"
 puts "Bultin: #{builtin_extractor.builtin_validation_cnt}, \
       Custom: #{builtin_extractor.custom_validation_cnt}, \
       Total constraints: #{constraints_cnt}"
-Serializer.serialize_tree(root, "#{dir}/../constraints/#{appname}", for_rewrite)
+Serializer.serialize_tree(root, "#{dir}/constraints", for_rewrite)
+# Hoconer.convert_write(root, "#{dir}/constraints", for_rewrite)
